@@ -12,12 +12,24 @@ const Main = () => {
     ];
 
     const addToCart = (product) => { 
-        const alreadyInCart = addedProducts.find((item) => item.name === product.name);
+    const productIndex = addedProducts.findIndex((item) => item.name === product.name);
 
-        if (!alreadyInCart) {
-            setAddedProducts([...addedProducts, { ...product, quantity: 1 }]);
-        }
+    if (productIndex === -1) {
+      setAddedProducts([...addedProducts, { ...product, quantity: 1 }]);
+    } else {
+      const updatedCart = [...addedProducts];
+      updatedCart[productIndex].quantity += 1;
+      setAddedProducts(updatedCart);
     }
+    }
+
+    const deleteFromCart = (i) => {
+        setAddedProducts(curr => curr.filter((curProduct, index) => {
+            return index !== i
+        }))
+    }
+
+    const totalPriceCart = addedProducts.reduce((acc, item) => acc + item.price * item.quantity, 0)
 
   return (
     <>
@@ -40,9 +52,11 @@ const Main = () => {
                             <p>{curAdded.name}</p>
                             <p>Prezzo: {curAdded.price}</p>
                             <p>Quantità: {curAdded.quantity}</p>
+                            <button onClick={() => deleteFromCart(index)}>Togli dal carrello</button>
                         </li>
                     ))}
                 </ul>
+                <h3>Costo totale: €{totalPriceCart.toFixed(2)}</h3>
             </div>
           </div>
       </section>
